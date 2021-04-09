@@ -17,7 +17,7 @@ router.get('/insta-media', (req, res) => {
     instaApi(token, media => {
         res.send(media.data.data);
     }, error => {
-        res.status(404).json({ message: error.message });
+        res.status(error.response.status).json(error.response.data.error);
     });
 })
 
