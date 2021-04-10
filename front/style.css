@@ -105,7 +105,7 @@ main {
     color: #606974;
 }
 
-.gallery {
+.gallery, #gallery {
     margin: auto;
     display: flex;
     justify-content: center;
@@ -114,6 +114,10 @@ main {
     padding: 40px 10px;
     width: 90%;
     max-width: 1200px;
+}
+
+.line {
+    border-bottom: 1px solid #d4d4d4;
 }
 
 .ing-image {
