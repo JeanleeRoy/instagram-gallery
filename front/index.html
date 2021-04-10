@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div class="present-video">
-                    <video width="380" height="240" controls>
+                    <video controls>
                         <source src="./assets/video.mp4" type="video/mp4">
                       Your browser does not support the video tag.
                       </video> 
@@ -55,10 +55,17 @@
                 <img src="https://customercare.igloosoftware.com/.api2/api/v1/communities/10068556/previews/thumbnails/4fc20722-5368-e911-80d5-b82a72db46f2?width=680&height=680&crop=False" alt="image">
             </div>
         </section>
-        <br><div class="line"></div>
-        <section id="gallery">
 
-        </section>
+        <br><div class="line"></div>
+
+        <section class="gallery" id="gallery"></section>
+
+        <template id="image-template">
+            <picture class="ing-image">
+                <img class="image" src="#" alt="..">
+            </picture>
+        </template>
+
     </main>
     <script src="./main.js"></script>
 </body>
