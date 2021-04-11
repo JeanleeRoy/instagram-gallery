@@ -126,6 +126,7 @@ main {
 }
 
 .ing-image {
+    position: relative;
     max-width: 250px;
     min-width: 200px;
     margin: 10px;
@@ -135,6 +136,13 @@ main {
     width: 100%;
     line-height: 50px;
     text-align: center;
+    border-radius: 5px;
+}
+
+.ing-image svg {
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }
 
 @media screen and (min-width: 768px){
