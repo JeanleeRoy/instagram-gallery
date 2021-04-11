@@ -17,6 +17,7 @@ const getInstaMedia = () => {
         data.forEach(media => {
             $template.querySelector(".image").src = media.media_url;
             $template.querySelector(".image").alt = media.media_type;
+            $template.querySelector(".ing-image").setAttribute("href", media.permalink)
             console.log(media.media_type)
             if (media.media_type === 'VIDEO') {
                 $template.querySelector("svg").setAttribute("height", 18);
@@ -27,7 +28,6 @@ const getInstaMedia = () => {
             } else {
                 $template.querySelector(".path-svg").setAttribute("d", "");
             }
-            console.log($template.querySelector(".path-svg").attributes.d)
 
             let clone = document.importNode($template, true);
             $fragment.appendChild(clone);

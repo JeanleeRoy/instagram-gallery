@@ -110,15 +110,21 @@ main {
     color: #606974;
 }
 
+.instagram-gallery {
+    margin: auto;
+    width: 90%;
+    max-width: 1050px;
+    padding: 30px 10px;
+}
+
 .gallery {
+    width: 100%;
     margin: auto;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    padding: 40px 10px;
-    width: 90%;
-    max-width: 1200px;
+    padding: 20px;
 }
 
 .line {
@@ -126,6 +132,8 @@ main {
 }
 
 .ing-image {
+    display: block;
+    text-decoration: none;
     position: relative;
     max-width: 250px;
     min-width: 200px;
