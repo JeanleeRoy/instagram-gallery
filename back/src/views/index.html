@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insta - Token DSW</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', 'Open Sans', sans-serif;
+    }
+    .general {
+        display: block;
+        margin: 15px auto;
+        max-width: 100%;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        transition: all ease-in-out .2s;
+    }
+    input[type="text"] {
+        width: 300px;
+        border-radius: 5px;
+    }
+    button {
+        cursor: pointer;
+        border-radius: 10px;
+    }
+    button:disabled, button[disabled] {
+        cursor: auto;
+    }
+    #response {
+        position: absolute;
+        padding: 10px 20px;
+        bottom: 15vh;
+        left: 50%;
+        transform: translateX(-50%) translateY(300px);
+        text-align: center;
+        border-radius: 10px;
+        font-weight: bold;
+        transition: all ease .2s;
+    }
+    .goodans {
+        background-color: #ccc;
+        border: 2px solid #616161;
+        color: #616161;
+    }
+    .wrongans {
+        background-color: rgb(255, 180, 180);
+        border: 2px solid #ff4040;
+        color: #c50000;
+    }
+    .animate {
+        animation: top-down 4s ease-in-out;
+    }
+    @keyframes top-down {
+        0% {transform: translateX(-50%) translateY(300px);opacity: .6;}
+        15% {transform: translateX(-50%) translateY(0px);}
+        85% {transform: translateX(-50%) translateY(0px);}
+        100% {transform: translateX(-50%) translateY(300px);opacity: .7;}
+    }
+</style>
+
+<body style="height: 100vh; overflow: hidden;">
+    <header style="padding: 20px; background-color: #ccc; color: #616161;">
+        <h1 style="text-align: center; font-size: 1.5rem;">Actualizar Token DSW</h1>
+    </header>
+    <main style="padding: 20px; margin: auto; width: clamp(120px, 100%, 1100px);">
+        <form id="formulario" method="POST">
+            <input class="general" type="text" name="token" id="token" placeholder="Introducir el nuevo token">
+            <button class="general" id="upBtn" type="submit" style="padding: 8px 13px;">Actualizar</button>
+        </form>
+        <p id="response"></p>
+    </main>
+</body>
+<script>
+    const doc = document,
+        form = doc.getElementById('formulario'),
+        upbtn = doc.getElementById('upBtn'),
+        inptxt = doc.getElementById('token'),
+        resp = doc.getElementById('response'),
+        minLen = 100;
+
+    const sendInfo = (tkn) => {
+        fetch('/change-token', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                token: tkn,
+                key: ''
+            })
+        }).then(res => res.ok ? res.json() : Promise.reject(res))
+            .then(res => {
+                console.log(res)
+                resp.textContent = res.message;
+                resp.classList.add('goodans');
+                resp.classList.remove('wrongans')
+            }).catch(err => {
+                resp.textContent = "Ocurrió un error";
+                resp.classList.remove('goodans');
+                resp.classList.add('wrongans')
+            })
+    }
+
+    window.addEventListener('load', () => {
+        upbtn.disabled = true;
+        inptxt.value = '';
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            sendInfo(inptxt.value);
+            inptxt.value = '';
+            resp.classList.add('animate');
+            upbtn.disabled = true;
+            setTimeout(() => {
+                resp.classList.remove('animate')
+            }, 5000);
+        })
+
+        inptxt.addEventListener('keyup', (e) => {
+            if (e.target.value.length > minLen && upbtn.disabled)
+                upbtn.disabled = false;
+            if (e.target.value.length <= minLen && !upbtn.disabled)
+                upbtn.disabled = true;
+        })
+    });
+</script>
+
+</html>
