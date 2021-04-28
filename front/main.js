@@ -1,4 +1,4 @@
-const baseURL = 'http://localhost:3000/'
+const baseURL = 'https://insta--server.herokuapp.com/' // 'http://localhost:3000/'
 const instaAPI = baseURL + 'insta-media';
 
 const $gallery = document.getElementById('gallery');
@@ -11,7 +11,7 @@ const svgPath = {
 }
 
 const getInstaMedia = () => {
-    fetch('./assets/data.json')
+    fetch(instaAPI)   //./assets/data.json')
     .then(res => res.ok ? res.json() : Promise.reject(res))
     .then(data => {
         data.forEach(media => {
