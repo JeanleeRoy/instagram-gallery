@@ -17,15 +17,18 @@ router.get('/handleauth', (req, res) => {
 router.get('/insta-media', (req, res) => {
     res.set("Access-Control-Allow-Origin", "*");
     instaApi(instagram.token, media => {
+        instagram.status.last_access = new Date(Date.now());
         res.send(media.data.data);
     }, error => {
         res.status(error.response.status).json(error.response.data.error);
     });
 })
 
-router.get('/get-token', (req, res) => {
+router.get('/get-insta-info', (req, res) => {
     res.set("Access-Control-Allow-Origin", "*");
-    res.send({"token": instagram.token});
+    let date = new Date(instagram.status.new_token_date)
+    instagram.status.left_days = (date.getTime() - new Date(Date.now()).getTime())/(1000 * 3600 * 24)
+    res.send({"token": instagram.token, "status": instagram.status});
 });
 
 router.get('/update-token', (req, res) => {
@@ -34,9 +37,12 @@ router.get('/update-token', (req, res) => {
 });
 
 router.post('/change-token', (req, res) => {
-    console.log(instagram.token);
     instagram.token = req.body.token;
-    console.log(instagram.token);
+    let date = new Date(Date.now());
+    instagram.status.new_token_date = date;
+    date.setDate(date.getDate() + 59)
+    instagram.status.last_renewal_date = date;
+    instagram.status.left_days = (date.getTime() - new Date(Date.now()).getTime())/(1000 * 3600 * 24)
     res.json({"message": "Token actualizado", "token": instagram.token});
 })
 
