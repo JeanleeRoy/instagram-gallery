@@ -83,13 +83,13 @@
         <br>
         <div id="information" style="width: 100%; max-width: 400px; margin: auto;">
             <p><b>Última llamada a la API:</b>
-                <g style="float: right;" id="last-call">-: : -</g>
+                <g style="float: right;" id="last-call">- : : -</g>
             </p><br>
             <p><b>Token renovado el día:</b>
-                <g style="float: right;" id="renew-token">-: : -</g>
+                <g style="float: right;" id="renew-token">- : : -</g>
             </p><br>
             <p><b>Último día para renovar:</b>
-                <g style="float: right;" id="last-date">-: : -</g>
+                <g style="float: right;" id="last-date">- : : -</g>
             </p><br>
             <p><b>Días restantes:</b>
                 <g style="float: right;" id="left-days">días</g>
@@ -111,8 +111,14 @@
 
     const showMsg = (msg, error = false) => {
         resp.textContent = msg;
-        resp.classList.add(error? 'goodans': 'wrongans');
-        resp.classList.remove(error? 'wrongans': 'goodans');
+        resp.classList.remove(error? 'goodans': 'wrongans');
+        resp.classList.add(error? 'wrongans': 'goodans');
+    }
+
+    const formatDate = (db_date) => {
+        if(!db_date) return '- : : -';
+        let date = new Date(db_date)
+        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     }
 
     const sendInfo = (tkn) => {
@@ -130,14 +136,8 @@
             .then(res => {
                 console.log(res);
                 showMsg(res.message)
-                /*resp.textContent = res.message;
-                resp.classList.add('goodans');
-                resp.classList.remove('wrongans')*/
             }).catch(err => {
                 showMsg("Ocurrió un error", true)
-                /*resp.textContent = "Ocurrió un error";
-                resp.classList.remove('goodans');
-                resp.classList.add('wrongans')*/
             })
     }
 
@@ -150,10 +150,9 @@
         }).then(res => res.ok ? res.json() : Promise.reject(res))
             .then(res => {
                 console.log(res);
-                console.log(lastCall)
-                lastCall.innerText = res.status.last_access;
-                reToken.innerText = res.status.new_token_date;
-                lastDate.innerText = res.status.last_renewal_date;
+                lastCall.innerText = formatDate(res.status.last_access);
+                reToken.innerText = formatDate(res.status.new_token_date);
+                lastDate.innerText = formatDate(res.status.last_renewal_date);
                 leftDays.innerText = res.status.left_days;
             }).catch(err => {
                 showMsg("Ocurrió un error", true)
