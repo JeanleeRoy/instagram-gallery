@@ -76,6 +76,25 @@
             <button class="general" id="upBtn" type="submit" style="padding: 8px 13px;">Actualizar</button>
         </form>
         <p id="response"></p>
+        <br>
+        <div class="line" style="width: 100%; border-bottom: 1px solid #ddd;"></div>
+        <br>
+        <!--<button class="general" id="swInfo" type="button" style="padding: 8px 13px;">Mostrar información</button>-->
+        <br>
+        <div id="information" style="width: 100%; max-width: 400px; margin: auto;">
+            <p><b>Última llamada a la API:</b>
+                <g style="float: right;" id="last-call">-: : -</g>
+            </p><br>
+            <p><b>Token renovado el día:</b>
+                <g style="float: right;" id="renew-token">-: : -</g>
+            </p><br>
+            <p><b>Último día para renovar:</b>
+                <g style="float: right;" id="last-date">-: : -</g>
+            </p><br>
+            <p><b>Días restantes:</b>
+                <g style="float: right;" id="left-days">días</g>
+            </p><br>
+        </div>
     </main>
 </body>
 <script>
@@ -84,7 +103,17 @@
         upbtn = doc.getElementById('upBtn'),
         inptxt = doc.getElementById('token'),
         resp = doc.getElementById('response'),
+        lastCall = doc.getElementById('last-call'),
+        reToken = doc.getElementById('renew-token'),
+        lastDate = doc.getElementById('last-date'),
+        leftDays = doc.getElementById('left-days'),
         minLen = 100;
+
+    const showMsg = (msg, error = false) => {
+        resp.textContent = msg;
+        resp.classList.add(error? 'goodans': 'wrongans');
+        resp.classList.remove(error? 'wrongans': 'goodans');
+    }
 
     const sendInfo = (tkn) => {
         fetch('/change-token', {
@@ -99,20 +128,43 @@
             })
         }).then(res => res.ok ? res.json() : Promise.reject(res))
             .then(res => {
-                console.log(res)
-                resp.textContent = res.message;
+                console.log(res);
+                showMsg(res.message)
+                /*resp.textContent = res.message;
                 resp.classList.add('goodans');
-                resp.classList.remove('wrongans')
+                resp.classList.remove('wrongans')*/
             }).catch(err => {
-                resp.textContent = "Ocurrió un error";
+                showMsg("Ocurrió un error", true)
+                /*resp.textContent = "Ocurrió un error";
                 resp.classList.remove('goodans');
-                resp.classList.add('wrongans')
+                resp.classList.add('wrongans')*/
+            })
+    }
+
+    const getStatusInfo = () => {
+        fetch('/get-insta-info', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.ok ? res.json() : Promise.reject(res))
+            .then(res => {
+                console.log(res);
+                console.log(lastCall)
+                lastCall.innerText = res.status.last_access;
+                reToken.innerText = res.status.new_token_date;
+                lastDate.innerText = res.status.last_renewal_date;
+                leftDays.innerText = res.status.left_days;
+            }).catch(err => {
+                showMsg("Ocurrió un error", true)
             })
     }
 
     window.addEventListener('load', () => {
         upbtn.disabled = true;
         inptxt.value = '';
+
+        getStatusInfo();
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
