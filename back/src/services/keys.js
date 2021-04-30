@@ -5,7 +5,7 @@ module.exports = {
         token: 'IGQVJXQXc3aFdfeUdSRF8ycmlmZAC1LRzhuSGNfdXoycVZAqNFpBQnpZAZA25Cd2RSbGVaZAjZAkelBxVUcyX3JIS1QzNFl4Sm1QYlNxbjlFY1VEeUl3b0VqTUF5SWkyM19mbGNST0xYMlBaczgtVzJTU1pOOQZDZD',
         password: 'DSW2021+',
         status: {
-            last_access: '2021-04-30T02:36:23.793Z',
+            last_access: null,
             new_token_date: null,
             last_renewal_date: null,
             left_days: null

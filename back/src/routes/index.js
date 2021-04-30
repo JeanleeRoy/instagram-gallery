@@ -1,9 +1,20 @@
 const express = require('express');
 const instaApi = require('../services/instaApi')
-const instagram = require('../services/keys').instagram
+const insta = require('../services/keys').instagram
 const router = express.Router();
 const path = require('path');
 
+const getLeftDays = (fdate) => {
+    if (!fdate) return -1;
+    let date = new Date(fdate);
+    return (date.getTime() - new Date(Date.now()).getTime())/(1000 * 3600 * 24)
+}
+
+const addDays = (date, days) => {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
 
 router.get('/', (req, res) => {
     res.send("index Page");
@@ -16,8 +27,8 @@ router.get('/handleauth', (req, res) => {
 
 router.get('/insta-media', (req, res) => {
     res.set("Access-Control-Allow-Origin", "*");
-    instaApi(instagram.token, media => {
-        instagram.status.last_access = new Date(Date.now());
+    instaApi(insta.token, media => {
+        insta.status.last_access = new Date(Date.now());
         res.send(media.data.data);
     }, error => {
         res.status(error.response.status).json(error.response.data.error);
@@ -26,9 +37,8 @@ router.get('/insta-media', (req, res) => {
 
 router.get('/get-insta-info', (req, res) => {
     res.set("Access-Control-Allow-Origin", "*");
-    let date = new Date(instagram.status.new_token_date)
-    instagram.status.left_days = (date.getTime() - new Date(Date.now()).getTime())/(1000 * 3600 * 24)
-    res.send({"token": instagram.token, "status": instagram.status});
+    insta.status.left_days = getLeftDays(insta.status.last_renewal_date)
+    res.send({"token": insta.token, "status": insta.status});
 });
 
 router.get('/update-token', (req, res) => {
@@ -37,13 +47,13 @@ router.get('/update-token', (req, res) => {
 });
 
 router.post('/change-token', (req, res) => {
-    instagram.token = req.body.token;
-    let date = new Date(Date.now());
-    instagram.status.new_token_date = date;
-    date.setDate(date.getDate() + 59)
-    instagram.status.last_renewal_date = date;
-    instagram.status.left_days = (date.getTime() - new Date(Date.now()).getTime())/(1000 * 3600 * 24)
-    res.json({"message": "Token actualizado", "token": instagram.token});
+    insta.token = req.body.token;
+    insta.status.new_token_date = new Date(Date.now());
+    insta.status.last_renewal_date = addDays(insta.status.new_token_date, 59);
+    console.log(insta.status.last_renewal_date)
+    insta.status.left_days = getLeftDays(insta.status.last_renewal_date);
+    console.log(insta.status.left_days)
+    res.json({"message": "Token actualizado", "token": insta.token});
 })
 
 module.exports = router;
